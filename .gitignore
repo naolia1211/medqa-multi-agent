@@ -1,0 +1,28 @@
+# Index artifacts (sinh lại được từ pipeline — KHÔNG commit)
+index/
+qdrant_storage/
+es_storage/
+# MLflow backend sqlite + artifact store (docker volume)
+mlflow_data/
+# log/probe/export tạm, không thuộc mã nguồn
+scratch/
+
+# Dataset lớn ~300MB (tải riêng — xem README)
+MedQA-USMLE/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Secrets — KHÔNG commit
+*_keys.txt
+openrouter_keys.txt
+google_keys.txt
+.env
+# telegram: bot token + channel/thread id giám sát
+telegram.md

@@ -1,0 +1,148 @@
+# ══════════════════════════════════════════════════════════════════════════
+# Offline Indexing Pipeline — MedQA-USMLE
+# Mọi tham số tập trung ở đây. KHÔNG hardcode trong script.
+# Giá trị đã được xác nhận thực nghiệm ở Bước 0.
+# ══════════════════════════════════════════════════════════════════════════
+
+paths:
+  corpus_dir: MedQA-USMLE/textbooks/en
+  index_dir:  ./index
+  checkpoint: ./index/.checkpoint
+  questions_dev: MedQA-USMLE/questions/US/dev.jsonl   # dùng cho readiness test 7c
+
+embed_api:
+  base_url: http://10.10.50.99:8000   # HTTP (KHÔNG phải HTTPS — xác nhận Bước 0)
+  batch_size: 8                       # giới hạn thật của server (9 -> 422)
+  workers: 1                          # CPU-bound, concurrency không giúp
+  timeout: 60
+  retry: 3
+  backoff_base: 2.0                   # exponential backoff: base^attempt giây
+
+qdrant:
+  host: localhost
+  port: 6333
+  collection: medqa_dense
+  vector_size: 768
+  distance: Dot                       # khớp normalize=false của MedCPT
+  exact_search: true                  # TẮT HNSW (m=0)
+  upsert_batch: 256                   # số point mỗi lần upsert vào Qdrant
+
+elasticsearch:
+  host: http://localhost:9200
+  index: medqa_sparse
+  analyzer: medical_en                # custom, xem setup_indices.py
+  bulk_chunk_size: 500
+  similarity:
+    type: BM25
+    k1: 1.2
+    b: 0.75
+
+chunking:
+  target_tokens: 480                  # đếm THẬT bằng tokenizer, gồm [CLS]/[SEP]
+  hard_max_tokens: 512                # KHÔNG chunk nào được vượt
+  overlap_sentences: 1
+  min_tokens: 20
+
+embedding:
+  model: ncbi/MedCPT-Article-Encoder
+  dim: 768
+  normalize: false                    # giữ dot-product gốc của MedCPT
+
+rrf:
+  k: 60                               # hằng số RRF chuẩn
+  prefetch_limit: 20                  # lấy top-20 mỗi nhánh trước khi gộp
+  top_n: 5
+
+# ── ONLINE: rerank (MedCPT Cross-Encoder, cùng server embedding) ─────────────
+rerank:
+  enabled: true
+  endpoint: /rerank
+  server_max: 20                      # giới hạn thật: 20 article/request
+  candidates: 20                      # số chunk fused (sau RRF) đưa vào rerank
+  top_k: 5                            # số chunk giữ lại sau rerank -> vào LLM
+
+# ── ONLINE: xử lý query dài cho dense (MedCPT Query-Encoder cắt cứng 64 token) ──
+# Vignette MedQA median 155 tok, 96% câu > 64 -> câu hỏi thật + lab ở cuối bị mất.
+# Multi-window: cắt query thành cửa sổ <=64 tok (overlap), embed từng cửa sổ,
+# search Qdrant nhiều vector rồi gộp RRF -> toàn bộ vignette tham gia dense.
+dense_query:
+  multi_window: true
+  window_tokens: 62                   # 62 + [CLS]/[SEP] = 64 (giới hạn Query-Encoder)
+  overlap_tokens: 12                  # chồng lấn để không cắt giữa khái niệm
+  max_windows: 8                      # trần số cửa sổ (<=16 batch limit /embed/query)
+  query_tokenizer: ncbi/MedCPT-Query-Encoder
+
+# ── ONLINE: LLM sinh câu trả lời ────────────────────────────────────────────
+llm:
+  provider: ollama                    # ollama | google | openrouter
+  # --- Ollama (đang dùng) — không key, không rate-limit ---
+  ollama:
+    base_url: http://10.10.50.7:11434
+    model: hf.co/google/gemma-4-12B-it-qat-q4_0-gguf:Q4_0
+    num_ctx: 8192                     # đủ chứa 5 chunk RAG (~3200 tok) + reasoning + answer
+    think: false                     # model 12b không hỗ trợ kênh think riêng -> CoT trong content qua prompt
+    temperature: 0.0
+    timeout: 180
+    retry: 6                         # tăng: 404 model-not-found (evict/reload) là tạm thời, cần thử lại lâu hơn
+    keep_alive: "30m"                # giữ model nạp trên Ollama remote -> tránh 404 khi 3 agent gọi liên tục
+  # --- OpenRouter (dự phòng) ---
+  base_url: https://openrouter.ai/api/v1/chat/completions
+  model: google/gemma-4-26b-a4b-it:free
+  keys_file: openrouter_keys.txt      # gitignored — KHÔNG hardcode key
+  temperature: 0.0                    # tất định cho eval
+  max_tokens: 1024
+  timeout: 120
+  retry: 5                            # số vòng thử (mỗi vòng xoay hết các key)
+  reasoning: true                     # gửi {"reasoning": {"enabled": true}}
+  # --- Google AI Studio (đang dùng) ---
+  google:
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    model: gemma-4-26b-a4b-it
+    keys_file: google_keys.txt        # gitignored
+    temperature: 0.0
+    max_output_tokens: 8192           # đủ cho thinking dài + Answer
+    timeout: 120
+    retry: 5
+
+# ── ONLINE: eval trắc nghiệm ────────────────────────────────────────────────
+eval:
+  split: MedQA-USMLE/questions/US/dev.jsonl
+  limit: 50                           # số câu chấm (null = toàn bộ)
+  # Bottleneck là server MedCPT (CPU, 3 thread) — rerank 20 doc/call rất nặng.
+  # >4 query song song -> inference queue timeout (503). Giữ THẤP.
+  concurrency: 3  # (đã hạ để bớt burst per-minute) — trần cho ThreadPoolExecutor
+  # Adaptive concurrency: theo dõi tỉ lệ nghẽn Ollama (fail/latency cao) -> tự hạ về 1 khi
+  # nghẽn, tăng dần tới max khi thông. Trong suốt với agent (throttle.py).
+  adaptive_concurrency:
+    enabled: true
+    max: 3
+    min: 1
+    window: 10                  # số call gần nhất để tính tỉ lệ nghẽn
+    high_congestion: 0.7        # >=70% nghẽn mới tụt 1 bậc (GPU chia tải làm call chậm KHÔNG phải nghẽn)
+    low_congestion: 0.2         # <=20% nghẽn -> tăng 1 bậc
+    latency_threshold_s: 150    # chỉ near-timeout (>150s) mới tính nghẽn; call chậm 50-90s do GPU chia tải là BÌNH THƯỜNG
+
+# ── Theo dõi run (MLflow, chạy qua docker-compose service `mlflow`) ──────────
+mlflow:
+  enabled: true
+  tracking_uri: http://localhost:5000
+  experiment: medqa-v3
+  # Nếu server không sống -> tracking tự tắt (graceful), eval vẫn chạy.
+
+# ── Long-term memory (§9) — học từ CÂU SAI (tham chiếu /opt/medqa-long-term-memory) ──
+# QUY TRÌNH 2 PHA (bắt buộc để KHÁCH QUAN + TÁI LẬP — xem long_mem.py BUG-2/BUG-3):
+#   PHA HỌC: chạy trên DEV, memory.save_wrong=true -> tích luỹ lessons vào store.
+#   PHA TEST: chạy trên TEST (KHÔNG overlap dev), enabled=true + save_wrong=false -> store ĐÓNG BĂNG.
+# get_lessons dùng tập frozen lúc init (câu sai lưu trong 1 run chỉ dùng cho run SAU) +
+# tự loại lesson của CHÍNH câu đang hỏi (chống rò đáp án).
+memory:
+  enabled: true                        # STAGE 1 (dev): học — ghi lessons (frozen rỗng nên không inject khi học)
+  save_wrong: true
+  store: index/lessons.jsonl           # JSONL: mỗi dòng 1 lỗi + embedding (dedup theo câu)
+  top_k: 3                             # số lỗi quá khứ nạp vào prompt
+  similarity_threshold: 0.2            # cosine ĐÃ MEAN-CENTERING >= ngưỡng (BUG-4).
+                                       # MedCPT anisotropic (cosine thô câu-khác-nhau ~0.9) nên phải
+                                       # khử bằng centering; đo được p95≈0.21 -> 0.2 giữ ~top-6% tương tự.
+                                       # Cần >=2 lessons để centering hoạt động (ít hơn -> không retrieve).
+
+seed: 42                              # tất định cho mọi bước random

@@ -1,0 +1,27 @@
+# RAG y khoa — Offline Indexing Pipeline (Qdrant + Elasticsearch)
+# Python 3.10 (venv), CPU-only. Embedding đi QUA API — KHÔNG cài torch/faiss/rank_bm25.
+#
+# Ghi chú tương thích:
+#   numpy < 2.0            (faiss không dùng, nhưng transformers/qdrant ổn định với 1.26)
+#   transformers 4.39.3    chỉ dùng cho TOKENIZER (không load model — không cần torch)
+#   elasticsearch 8.15.0   khớp server ES 8.15.0 trong docker-compose
+
+# ── Bước 3: chunking (tokenizer thật) ───────────────────────────────────────
+tqdm==4.66.4
+pyyaml==6.0.1
+transformers==4.39.3       # CHỈ tokenizer — AutoTokenizer, không load model
+tokenizers==0.15.2         # transformers 4.39.3 ghim tokenizers>=0.14,<0.19
+numpy==1.26.4              # nền cho transformers/qdrant-client
+
+# ── Bước 4: nạp index ───────────────────────────────────────────────────────
+requests==2.34.2           # gọi /embed/article, /embed/query
+qdrant-client==1.18.0      # dense vector store
+elasticsearch==8.15.0      # sparse BM25 store (khớp server 8.15.0)
+
+# ── V3 multi-agent: theo dõi run eval ───────────────────────────────────────
+mlflow                     # tracking run eval (server chạy docker, client ở venv) — bản mới nhất
+
+# ── KHÔNG cài (embedding qua API) ───────────────────────────────────────────
+# torch          — model chạy trên server embedding, không cần local
+# faiss-cpu       — thay bằng Qdrant
+# rank_bm25       — thay bằng Elasticsearch
