@@ -20,19 +20,19 @@
       "tokens_total": 905219
     },
     "rag-only": {
-      "accuracy": 0.7981,
-      "correct": 1016,
+      "accuracy": 0.795,
+      "correct": 1012,
       "total": 1273,
       "acc_ci95": [
-        0.7761,
-        0.8201
+        0.773,
+        0.817
       ],
       "invalid": 0,
       "invalid_rate": 0.0,
-      "latency_mean_s": 48.3,
-      "latency_median_s": 46.3,
-      "latency_p95_s": 72.6,
-      "tokens_total": 0
+      "latency_mean_s": 47.6,
+      "latency_median_s": 45.6,
+      "latency_p95_s": 71.8,
+      "tokens_total": 4105143
     },
     "v3-mem-off": {
       "accuracy": 0.7329,
@@ -69,32 +69,32 @@
     {
       "base": "direct-llm",
       "new": "rag-only",
-      "accuracy_gain": -0.0189,
-      "win": 84,
-      "loss": 108,
-      "tie": 1081,
-      "mcnemar_b": 108,
-      "mcnemar_c": 84,
-      "mcnemar_p": 0.09668,
+      "accuracy_gain": -0.022,
+      "win": 77,
+      "loss": 105,
+      "tie": 1091,
+      "mcnemar_b": 105,
+      "mcnemar_c": 77,
+      "mcnemar_p": 0.04505,
       "diff_ci95": [
-        -0.0401,
-        0.0024
+        -0.0432,
+        -0.0016
       ],
-      "significant": false
+      "significant": true
     },
     {
       "base": "rag-only",
       "new": "v3-mem-off",
-      "accuracy_gain": -0.0652,
-      "win": 50,
-      "loss": 133,
-      "tie": 1090,
-      "mcnemar_b": 133,
-      "mcnemar_c": 50,
+      "accuracy_gain": -0.0621,
+      "win": 53,
+      "loss": 132,
+      "tie": 1088,
+      "mcnemar_b": 132,
+      "mcnemar_c": 53,
       "mcnemar_p": 0.0,
       "diff_ci95": [
-        -0.0856,
-        -0.0448
+        -0.0833,
+        -0.0416
       ],
       "significant": true
     },

@@ -6,7 +6,7 @@ import metrics as M
 N = 1273
 VARIANTS = [
     ("Direct LLM (không RAG)", "index/eval_direct_results.DIRECT.json"),
-    ("RAG-only (single-LLM+RAG)", "index/eval_results.RAGONLY.json"),
+    ("RAG-only (single-LLM+RAG)", "index/eval_rag_results.json"),
     ("V3 multi-agent OFF (mem tắt)", "index/eval_agents_results.OFF.json"),
     ("V3 multi-agent ON (mem bật)", "index/eval_agents_results.ON.json"),
 ]

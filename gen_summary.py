@@ -6,7 +6,7 @@ import metrics as M
 N = 1273
 FILES = {
     "direct-llm": "index/eval_direct_results.DIRECT.json",
-    "rag-only": "index/eval_results.RAGONLY.json",
+    "rag-only": "index/eval_rag_results.json",
     "v3-mem-off": "index/eval_agents_results.OFF.json",
     "v3-mem-on": "index/eval_agents_results.ON.json",
 }
