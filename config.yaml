@@ -115,7 +115,7 @@ eval:
   # nghẽn, tăng dần tới max khi thông. Trong suốt với agent (throttle.py).
   adaptive_concurrency:
     enabled: true
-    max: 3
+    max: 8                       # nâng 3->8: probe xác nhận Ollama (num_parallel=8) + MedCPT rerank đều 0 lỗi ở 8 luồng
     min: 1
     window: 10                  # số call gần nhất để tính tỉ lệ nghẽn
     high_congestion: 0.7        # >=70% nghẽn mới tụt 1 bậc (GPU chia tải làm call chậm KHÔNG phải nghẽn)
@@ -136,8 +136,8 @@ mlflow:
 # get_lessons dùng tập frozen lúc init (câu sai lưu trong 1 run chỉ dùng cho run SAU) +
 # tự loại lesson của CHÍNH câu đang hỏi (chống rò đáp án).
 memory:
-  enabled: true                        # STAGE 1 (dev): học — ghi lessons (frozen rỗng nên không inject khi học)
-  save_wrong: true
+  enabled: true                        # STAGE 2 test ON: BẬT memory (frozen 304 lessons dev, trace tag memory=on)
+  save_wrong: false                    # ĐÓNG BĂNG store: test KHÔNG BAO GIỜ ghi lessons (chống rò test-vào-memory)
   store: index/lessons.jsonl           # JSONL: mỗi dòng 1 lỗi + embedding (dedup theo câu)
   top_k: 3                             # số lỗi quá khứ nạp vào prompt
   similarity_threshold: 0.2            # cosine ĐÃ MEAN-CENTERING >= ngưỡng (BUG-4).

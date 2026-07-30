@@ -9,6 +9,7 @@ import json
 import time
 import logging
 import functools
+import threading
 
 import yaml
 import requests
@@ -70,11 +71,22 @@ def count_tokens(tok, text):
     return len(tok.encode(text, add_special_tokens=True))
 
 
-@functools.lru_cache(maxsize=1)
+_query_tok_lock = threading.Lock()
+_query_tok_cache = {}
+
 def get_query_tokenizer(model_name):
-    """Tokenizer của Query-Encoder — để cắt query dài thành cửa sổ <=64 token."""
-    from transformers import AutoTokenizer
-    return AutoTokenizer.from_pretrained(model_name)
+    """Tokenizer của Query-Encoder — để cắt query dài thành cửa sổ <=64 token.
+    Thread-safe (double-checked locking): serialize lần nạp ĐẦU để tránh race lazy-import
+    transformers khi nhiều luồng cùng gọi lần đầu (fast-path không lock sau khi đã cache)."""
+    tok = _query_tok_cache.get(model_name)
+    if tok is None:
+        with _query_tok_lock:
+            tok = _query_tok_cache.get(model_name)
+            if tok is None:
+                from transformers import AutoTokenizer
+                tok = AutoTokenizer.from_pretrained(model_name)
+                _query_tok_cache[model_name] = tok
+    return tok
 
 
 # ── Client embedding API ─────────────────────────────────────────────────────

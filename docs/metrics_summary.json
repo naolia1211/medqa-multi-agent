@@ -1,0 +1,134 @@
+{
+  "dataset": "MedQA-USMLE test",
+  "n_total": 1273,
+  "model": "gemma-4-12B-it-qat-q4_0",
+  "seed": 42,
+  "per_variant": {
+    "direct-llm": {
+      "accuracy": 0.817,
+      "correct": 1040,
+      "total": 1273,
+      "acc_ci95": [
+        0.7958,
+        0.8382
+      ],
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "latency_mean_s": 33.7,
+      "latency_median_s": 31.5,
+      "latency_p95_s": 52.9,
+      "tokens_total": 905219
+    },
+    "rag-only": {
+      "accuracy": 0.7981,
+      "correct": 1016,
+      "total": 1273,
+      "acc_ci95": [
+        0.7761,
+        0.8201
+      ],
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "latency_mean_s": 48.3,
+      "latency_median_s": 46.3,
+      "latency_p95_s": 72.6,
+      "tokens_total": 0
+    },
+    "v3-mem-off": {
+      "accuracy": 0.7329,
+      "correct": 933,
+      "total": 1273,
+      "acc_ci95": [
+        0.7093,
+        0.7565
+      ],
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "latency_mean_s": 168.2,
+      "latency_median_s": 163.7,
+      "latency_p95_s": 215.7,
+      "tokens_total": 12391675
+    },
+    "v3-mem-on": {
+      "accuracy": 0.7683,
+      "correct": 978,
+      "total": 1273,
+      "acc_ci95": [
+        0.7455,
+        0.791
+      ],
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "latency_mean_s": 182.9,
+      "latency_median_s": 177.7,
+      "latency_p95_s": 246.1,
+      "tokens_total": 15009003
+    }
+  },
+  "pairwise": [
+    {
+      "base": "direct-llm",
+      "new": "rag-only",
+      "accuracy_gain": -0.0189,
+      "win": 84,
+      "loss": 108,
+      "tie": 1081,
+      "mcnemar_b": 108,
+      "mcnemar_c": 84,
+      "mcnemar_p": 0.09668,
+      "diff_ci95": [
+        -0.0401,
+        0.0024
+      ],
+      "significant": false
+    },
+    {
+      "base": "rag-only",
+      "new": "v3-mem-off",
+      "accuracy_gain": -0.0652,
+      "win": 50,
+      "loss": 133,
+      "tie": 1090,
+      "mcnemar_b": 133,
+      "mcnemar_c": 50,
+      "mcnemar_p": 0.0,
+      "diff_ci95": [
+        -0.0856,
+        -0.0448
+      ],
+      "significant": true
+    },
+    {
+      "base": "v3-mem-off",
+      "new": "v3-mem-on",
+      "accuracy_gain": 0.0353,
+      "win": 94,
+      "loss": 49,
+      "tie": 1130,
+      "mcnemar_b": 49,
+      "mcnemar_c": 94,
+      "mcnemar_p": 0.00021,
+      "diff_ci95": [
+        0.0173,
+        0.0534
+      ],
+      "significant": true
+    },
+    {
+      "base": "v3-mem-on",
+      "new": "direct-llm",
+      "accuracy_gain": 0.0487,
+      "win": 142,
+      "loss": 80,
+      "tie": 1051,
+      "mcnemar_b": 80,
+      "mcnemar_c": 142,
+      "mcnemar_p": 4e-05,
+      "diff_ci95": [
+        0.0259,
+        0.0715
+      ],
+      "significant": true
+    }
+  ]
+}
