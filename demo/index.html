@@ -6,18 +6,23 @@
 <title>MedQA — Live Demo</title>
 <style>
   :root { --bg:#0f1115; --card:#1a1d24; --bd:#2a2f3a; --fg:#e6e6e6; --mut:#9aa4b2;
-          --ok:#2ecc71; --bad:#e74c3c; --acc:#4da3ff; --tok:#f39c12; }
+          --ok:#2ecc71; --bad:#e74c3c; --acc:#4da3ff; --tok:#f39c12;
+          /* categorical (dataviz palette, dark, slot 1-4) — cố định theo variant */
+          --c-direct:#3987e5; --c-rag:#d95926; --c-v2:#199e70; --c-v3:#c98500; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; }
-  header { padding:14px 20px; border-bottom:1px solid var(--bd); }
-  h1 { margin:0; font-size:18px; } .sub { color:var(--mut); font-size:12px; }
+  header { padding:14px 20px; border-bottom:1px solid var(--bd); display:flex; align-items:baseline; gap:20px; flex-wrap:wrap; }
+  h1 { margin:0; font-size:18px; }
+  .tabs { display:flex; gap:6px; }
+  .tab { cursor:pointer; padding:6px 16px; border:1px solid var(--bd); border-radius:8px; color:var(--mut); background:transparent; font:inherit; }
+  .tab.on { background:var(--acc); color:#031525; border-color:var(--acc); font-weight:700; }
   .wrap { padding:16px 20px; max-width:1500px; margin:0 auto; }
+  .hidden { display:none; }
   .panel { background:var(--card); border:1px solid var(--bd); border-radius:12px; padding:14px; margin-bottom:14px; }
   .step { font-weight:700; font-size:13px; color:var(--acc); margin:16px 0 6px; padding-top:12px; border-top:1px solid var(--bd); }
   .step:first-child { margin-top:0; padding-top:0; border-top:none; }
   label { color:var(--mut); font-size:12px; display:block; margin:8px 0 3px; }
-  select,button,textarea,input { background:#0f1115; color:var(--fg); border:1px solid var(--bd);
-    border-radius:8px; padding:8px 10px; font:inherit; width:100%; }
+  select,button,textarea,input { background:#0f1115; color:var(--fg); border:1px solid var(--bd); border-radius:8px; padding:8px 10px; font:inherit; width:100%; }
   textarea { resize:vertical; min-height:70px; }
   .opts5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
   .optrow { display:flex; gap:6px; align-items:center; } .optrow span { color:var(--acc); font-weight:700; width:16px; }
@@ -25,8 +30,7 @@
   button { cursor:pointer; width:auto; } button:hover { border-color:var(--acc); }
   button.run { background:var(--acc); color:#031525; border:none; font-weight:700; padding:9px 20px; }
   .vers { display:flex; gap:10px; flex-wrap:wrap; }
-  .chk { display:flex; gap:7px; align-items:center; cursor:pointer; user-select:none;
-         border:1px solid var(--bd); border-radius:20px; padding:5px 14px; font-size:13px; }
+  .chk { display:flex; gap:7px; align-items:center; cursor:pointer; user-select:none; border:1px solid var(--bd); border-radius:20px; padding:5px 14px; font-size:13px; }
   .chk input { width:auto; } .chk small { color:var(--mut); }
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
   .card { background:var(--card); border:1px solid var(--bd); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
@@ -42,11 +46,31 @@
   .b-run { background:rgba(77,163,255,.15); color:var(--acc); }
   .met { color:var(--mut); } .met b { color:var(--fg); } .tok { color:var(--tok); }
   .cursor::after { content:"▍"; color:var(--acc); animation:bl 1s steps(1) infinite; } @keyframes bl { 50%{opacity:0;} }
+  /* ---- metrics tab ---- */
+  .mgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; }
+  .chart-t { font-weight:700; font-size:14px; margin-bottom:2px; } .chart-s { color:var(--mut); font-size:11.5px; margin-bottom:12px; }
+  .bar-row { display:grid; grid-template-columns:96px 1fr auto; gap:10px; align-items:center; margin:9px 0; }
+  .bar-name { font-size:12px; color:var(--fg); text-align:right; }
+  .bar-track { background:#0f1115; border-radius:5px; height:20px; position:relative; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:0 5px 5px 0; min-width:2px; transition:width .5s ease; }
+  .bar-val { font-size:12px; font-weight:700; font-variant-numeric:tabular-nums; min-width:64px; text-align:right; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; margin:6px 0 14px; font-size:12px; color:var(--mut); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; } .swatch { width:11px; height:11px; border-radius:3px; }
+  table.pw { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.pw th, table.pw td { padding:8px 10px; border-bottom:1px solid var(--bd); text-align:left; }
+  table.pw th { color:var(--mut); font-weight:600; }
+  .gain-pos { color:var(--ok); font-weight:700; } .gain-neg { color:var(--bad); font-weight:700; }
+  .sig { font-size:11px; border-radius:20px; padding:1px 8px; } .sig-y { background:rgba(46,204,113,.15); color:var(--ok); } .sig-n { background:rgba(154,164,178,.15); color:var(--mut); }
 </style>
 </head>
 <body>
-<header><h1>MedQA-USMLE · Live Demo</h1></header>
-<div class="wrap">
+<header>
+  <h1>MedQA-USMLE · Live Demo</h1>
+  <div class="tabs"><button class="tab on" data-tab="demo">▶ Live Demo</button><button class="tab" data-tab="metrics">📊 Hiệu năng</button></div>
+</header>
+
+<!-- ===== TAB DEMO ===== -->
+<div class="wrap" id="tab-demo">
   <div class="panel">
     <div class="step">Bước 1 · Nhập câu hỏi</div>
     <label>Nạp nhanh câu mẫu từ tập test (kèm đáp án đúng để chấm) — hoặc tự nhập bên dưới</label>
@@ -65,47 +89,65 @@
   </div>
   <div class="grid" id="grid"></div>
 </div>
+
+<!-- ===== TAB METRICS ===== -->
+<div class="wrap hidden" id="tab-metrics">
+  <div class="panel" style="margin-bottom:14px">
+    <div class="chart-t">Kết quả benchmark — test 1273 câu (gemma-4-12B, temp 0)</div>
+    <div class="chart-s">Accuracy = correct/1273 (mẫu số cố định). Chỉ số tổng hợp offline, không phải câu demo.</div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="mgrid" id="charts"></div>
+  <div class="panel" style="margin-top:14px">
+    <div class="chart-t">So sánh ghép cặp (paired McNemar exact + bootstrap 95% CI)</div>
+    <div class="chart-s">Gain dương = version sau tốt hơn. Ý nghĩa: p&lt;0.05.</div>
+    <div style="overflow-x:auto"><table class="pw" id="pwtable"></table></div>
+  </div>
+</div>
+
 <script>
 let VARIANTS=[], LETTERS=['A','B','C','D','E'];
 const $=id=>document.getElementById(id);
+// ánh xạ key metrics -> nhãn + màu cố định
+const VMETA={ 'direct-llm':{n:'Direct LLM',c:'var(--c-direct)'}, 'rag-only':{n:'RAG-only',c:'var(--c-rag)'},
+              'v2':{n:'V2 (no-mem)',c:'var(--c-v2)'}, 'v3':{n:'V3 (memory)',c:'var(--c-v3)'} };
+const ORDER=['direct-llm','rag-only','v2','v3'];
+
+// ---- tab switch ----
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  const m=t.dataset.tab==='metrics';
+  $('tab-demo').classList.toggle('hidden',m); $('tab-metrics').classList.toggle('hidden',!m);
+  if(m && !$('charts').dataset.loaded) loadMetrics();
+});
+
+// ---- DEMO tab ----
 async function boot(){
   const m=await (await fetch('/api/meta')).json();
   VARIANTS=m.variants;
   $('qsel').innerHTML='<option value="">— chọn câu mẫu —</option>'+
     m.questions.map(q=>`<option value="${q.idx}">#${q.idx} · ${q.q}</option>`).join('');
   $('opts').innerHTML=LETTERS.map(k=>`<div class="optrow"><span>${k}</span><input id="opt-${k}" placeholder="lựa chọn ${k}"></div>`).join('');
-  $('vers').innerHTML=VARIANTS.map(v=>`<label class="chk"><input type="checkbox" value="${v.id}" checked>
-    ${v.name} <small>${v.desc}</small></label>`).join('');
+  $('vers').innerHTML=VARIANTS.map(v=>`<label class="chk"><input type="checkbox" value="${v.id}" checked> ${v.name} <small>${v.desc}</small></label>`).join('');
   $('qsel').onchange=async()=>{ const i=$('qsel').value; if(i==='')return;
     const q=await (await fetch('/api/question/'+i)).json();
     $('qtext').value=q.question; LETTERS.forEach(k=>$('opt-'+k).value=q.options[k]||''); $('gold').value=q.gold||''; };
   $('run').onclick=runSelected;
 }
-function buildCards(sel){
-  $('grid').innerHTML=sel.map(v=>`
-    <div class="card" id="card-${v.id}">
-      <div class="chd"><div class="cname">${v.name}</div><div class="cdesc">${v.desc}</div></div>
-      <div class="body" id="body-${v.id}"><span class="phase">— chờ —</span></div>
-      <div class="foot" id="foot-${v.id}"></div></div>`).join('');
-}
-function collect(){
-  const options={}; LETTERS.forEach(k=>{ const v=$('opt-'+k).value.trim(); if(v) options[k]=v; });
-  return { question:$('qtext').value.trim(), options, gold:$('gold').value };
-}
+function buildCards(sel){ $('grid').innerHTML=sel.map(v=>`
+    <div class="card" id="card-${v.id}"><div class="chd"><div class="cname">${v.name}</div><div class="cdesc">${v.desc}</div></div>
+      <div class="body" id="body-${v.id}"><span class="phase">— chờ —</span></div><div class="foot" id="foot-${v.id}"></div></div>`).join(''); }
+function collect(){ const options={}; LETTERS.forEach(k=>{ const v=$('opt-'+k).value.trim(); if(v) options[k]=v; });
+  return { question:$('qtext').value.trim(), options, gold:$('gold').value }; }
 function runVariant(v, q){ return new Promise(res=>{
-  const body=$('body-'+v.id), foot=$('foot-'+v.id);
-  body.innerHTML=''; foot.innerHTML='<span class="badge b-run">đang chạy…</span>'; let cur=null;
-  const p=new URLSearchParams({variant:v.id, question:q.question, options:JSON.stringify(q.options)});
-  if(q.gold) p.set('gold', q.gold);
+  const body=$('body-'+v.id), foot=$('foot-'+v.id); body.innerHTML=''; foot.innerHTML='<span class="badge b-run">đang chạy…</span>'; let cur=null;
+  const p=new URLSearchParams({variant:v.id, question:q.question, options:JSON.stringify(q.options)}); if(q.gold) p.set('gold', q.gold);
   const src=new EventSource('/stream?'+p.toString());
   src.onmessage=e=>{ const d=JSON.parse(e.data);
     if(d.type==='phase'){ const el=document.createElement('div'); el.className='phase'; el.textContent='▸ '+(d.detail||d.name); body.appendChild(el); }
-    else if(d.type==='agent'){ const w=document.createElement('div'); w.className='agent';
-      w.innerHTML=`<div class="alab">${d.name}</div><div class="stream cursor"></div>`; body.appendChild(w); cur=w.querySelector('.stream'); }
+    else if(d.type==='agent'){ const w=document.createElement('div'); w.className='agent'; w.innerHTML=`<div class="alab">${d.name}</div><div class="stream cursor"></div>`; body.appendChild(w); cur=w.querySelector('.stream'); }
     else if(d.type==='token'&&cur){ cur.textContent+=d.text; body.scrollTop=body.scrollHeight; }
-    else if(d.type==='agent_done'){ if(cur)cur.classList.remove('cursor');
-      const s=document.createElement('span'); s.className='met'; s.style.fontSize='11px'; s.innerHTML=` <span class="tok">${d.tokens} tok</span> · ${d.latency}s`;
-      if(cur&&cur.previousElementSibling)cur.previousElementSibling.appendChild(s); }
+    else if(d.type==='agent_done'){ if(cur)cur.classList.remove('cursor'); const s=document.createElement('span'); s.className='met'; s.style.fontSize='11px'; s.innerHTML=` <span class="tok">${d.tokens} tok</span> · ${d.latency}s`; if(cur&&cur.previousElementSibling)cur.previousElementSibling.appendChild(s); }
     else if(d.type==='answer'){ const b=d.correct===null?'b-run':(d.correct?'b-ok':'b-bad'); const t=d.correct===null?'':(d.correct?'✓ ĐÚNG':'✗ SAI');
       foot.innerHTML=`<span class="badge ${b}">Đáp án: ${d.pred||'—'} ${t}</span>`+(d.gold?`<span class="met">gold ${d.gold}</span>`:''); }
     else if(d.type==='metrics'){ foot.innerHTML+=`<span class="met"><b>${d.latency}s</b></span> <span class="met tok"><b>${d.tokens_total}</b> tok</span><span class="met">${d.n_calls} call LLM</span>`; }
@@ -113,15 +155,49 @@ function runVariant(v, q){ return new Promise(res=>{
     else if(d.type==='end'){ src.close(); res(); } };
   src.onerror=()=>{ src.close(); foot.innerHTML+=' <span class="badge b-bad">mất kết nối</span>'; res(); };
 });}
-async function runSelected(){
-  const q=collect();
+async function runSelected(){ const q=collect();
   if(!q.question || Object.keys(q.options).length<2){ alert('Nhập câu hỏi + ít nhất 2 lựa chọn.'); return; }
   const ids=[...document.querySelectorAll('#vers input:checked')].map(c=>c.value);
   if(!ids.length){ alert('Chọn ít nhất 1 version.'); return; }
-  const sel=VARIANTS.filter(v=>ids.includes(v.id)); buildCards(sel);
-  $('run').disabled=true;
+  const sel=VARIANTS.filter(v=>ids.includes(v.id)); buildCards(sel); $('run').disabled=true;
   for(const v of sel){ $('status').textContent='Đang chạy: '+v.name; await runVariant(v,q); }
   $('status').textContent='Xong.'; $('run').disabled=false;
+}
+
+// ---- METRICS tab ----
+function fmtTok(n){ return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'k':n; }
+function barChart(title, sub, rows, fmt){
+  const max=Math.max(...rows.map(r=>r.value))*1.02||1;
+  const bars=rows.map(r=>`<div class="bar-row" title="${r.name}: ${fmt(r.value)}">
+      <div class="bar-name">${r.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${r.value/max*100}%;background:${r.color}"></div></div>
+      <div class="bar-val">${fmt(r.value)}</div></div>`).join('');
+  return `<div class="card"><div style="padding:12px 14px"><div class="chart-t">${title}</div><div class="chart-s">${sub}</div>${bars}</div></div>`;
+}
+async function loadMetrics(){
+  let d; try{ d=await (await fetch('/api/metrics')).json(); }catch(e){ $('charts').innerHTML='<div class="panel">Chưa có dữ liệu metrics.</div>'; return; }
+  if(d.error){ $('charts').innerHTML='<div class="panel">'+d.error+'</div>'; return; }
+  const pv=d.per_variant;
+  const keys=ORDER.filter(k=>pv[k]);
+  $('legend').innerHTML=keys.map(k=>`<span><span class="swatch" style="background:${VMETA[k].c}"></span>${VMETA[k].n}</span>`).join('');
+  const rows=(field)=>keys.map(k=>({name:VMETA[k].n, color:VMETA[k].c, value:pv[k][field]}));
+  $('charts').innerHTML =
+    barChart('Accuracy', 'correct / 1273 (cao hơn = tốt)', rows('accuracy').map(r=>({...r,value:r.value*100})), v=>v.toFixed(2)+'%')
+   +barChart('Độ trễ (median/câu)', 'thấp hơn = nhanh', rows('latency_median_s'), v=>v.toFixed(0)+'s')
+   +barChart('Token tổng (in+out)', 'thấp hơn = rẻ', rows('tokens_total'), v=>fmtTok(v))
+   +barChart('Invalid rate', 'đáp án không hợp lệ (thấp hơn = tốt)', rows('invalid_rate').map(r=>({...r,value:r.value*100})), v=>v.toFixed(2)+'%');
+  // bảng pairwise
+  const nm=k=>VMETA[k]?VMETA[k].n:k;
+  $('pwtable').innerHTML='<thead><tr><th>So sánh</th><th>Gain</th><th>Win/Loss/Tie</th><th>McNemar p</th><th>95% CI hiệu</th><th>Ý nghĩa</th></tr></thead><tbody>'+
+    d.pairwise.map(p=>{ const g=(p.accuracy_gain*100); const gc=g>=0?'gain-pos':'gain-neg';
+      return `<tr><td>${nm(p.base)} → ${nm(p.new)}</td>
+        <td class="${gc}">${g>=0?'+':''}${g.toFixed(2)}đ</td>
+        <td>${p.win}/${p.loss}/${p.tie}</td>
+        <td>${p.mcnemar_p.toFixed(4)}</td>
+        <td>[${(p.diff_ci95[0]*100).toFixed(2)}, ${(p.diff_ci95[1]*100).toFixed(2)}]</td>
+        <td><span class="sig ${p.significant?'sig-y':'sig-n'}">${p.significant?'CÓ (p<0.05)':'không'}</span></td></tr>`;
+    }).join('')+'</tbody>';
+  $('charts').dataset.loaded='1';
 }
 boot();
 </script>

@@ -31,6 +31,15 @@ def index():
     return send_from_directory(HERE, "index.html")
 
 
+@app.route("/api/metrics")
+def metrics():
+    # đọc kết quả benchmark tổng hợp (docs/metrics_summary.json — sinh bởi gen_summary.py)
+    p = os.path.join(os.path.dirname(HERE), "docs", "metrics_summary.json")
+    if not os.path.exists(p):
+        return {"error": "chưa có metrics_summary.json"}, 404
+    return json.load(open(p, encoding="utf-8"))
+
+
 @app.route("/api/meta")
 def meta():
     # danh sách 60 câu đầu cho dropdown + variants + accuracy tổng hợp
