@@ -113,6 +113,22 @@
         0.0204
       ],
       "significant": false
+    },
+    {
+      "base": "v3",
+      "new": "direct-llm",
+      "accuracy_gain": 0.0487,
+      "win": 142,
+      "loss": 80,
+      "tie": 1051,
+      "mcnemar_b": 80,
+      "mcnemar_c": 142,
+      "mcnemar_p": 4e-05,
+      "diff_ci95": [
+        0.0259,
+        0.0715
+      ],
+      "significant": true
     }
   ]
 }

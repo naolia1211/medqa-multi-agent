@@ -30,7 +30,8 @@ for k, r in data.items():
         "tokens_total": cl.get("tokens_total", 0),
     }
 
-PAIRS = [("direct-llm", "rag-only"), ("rag-only", "v2"), ("v2", "v3")]               # cả 2 memory vs zero memory (net)
+PAIRS = [("direct-llm", "rag-only"), ("rag-only", "v2"), ("v2", "v3"),   # thang bậc pipeline
+         ("v3", "direct-llm")]                                           # endpoints: V3 (hệ đầy đủ) vs Direct (baseline)
 for base, new in PAIRS:
     al = M.align(data[base], data[new])
     wlt = M.win_loss_tie(al); mc = M.mcnemar(al)
