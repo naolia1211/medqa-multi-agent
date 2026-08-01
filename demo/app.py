@@ -59,6 +59,9 @@ def stream():
         gold = request.args.get("gold") or None
 
     def gen():
+        # Padding 2KB đầu stream: ép proxy (nginx/NPM) FLUSH ngay, vượt qua buffer nhỏ mặc định.
+        yield ": " + (" " * 2048) + "\n\n"
+        yield "retry: 3000\n\n"
         try:
             for ev in P.run_variant(variant, question, options, gold):
                 if ev.get("type") == "_result":
@@ -69,7 +72,8 @@ def stream():
         yield "data: {\"type\":\"end\"}\n\n"
 
     return Response(gen(), mimetype="text/event-stream",
-                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no",
+                             "Connection": "keep-alive"})
 
 
 if __name__ == "__main__":
