@@ -7,8 +7,8 @@ N = 1273
 FILES = {
     "direct-llm": "index/eval_direct_results.DIRECT.json",
     "rag-only": "index/eval_rag_results.json",
-    "v3-mem-off": "index/eval_agents_results.OFF.json",
-    "v3-mem-on": "index/eval_agents_results.ON.json",
+    "v2": "index/eval_v2_results.V2.json",          # 3 agent, ZERO memory (mốc no-mem)
+    "v3": "index/eval_agents_results.ON.json",      # 3 agent, cả 2 memory
 }
 data = {k: M.load_results(v) for k, v in FILES.items()}
 
@@ -30,8 +30,7 @@ for k, r in data.items():
         "tokens_total": cl.get("tokens_total", 0),
     }
 
-PAIRS = [("direct-llm", "rag-only"), ("rag-only", "v3-mem-off"),
-         ("v3-mem-off", "v3-mem-on"), ("v3-mem-on", "direct-llm")]
+PAIRS = [("direct-llm", "rag-only"), ("rag-only", "v2"), ("v2", "v3")]               # cả 2 memory vs zero memory (net)
 for base, new in PAIRS:
     al = M.align(data[base], data[new])
     wlt = M.win_loss_tie(al); mc = M.mcnemar(al)

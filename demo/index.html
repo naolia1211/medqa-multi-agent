@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedQA — Live Demo</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --bd:#2a2f3a; --fg:#e6e6e6; --mut:#9aa4b2;
+          --ok:#2ecc71; --bad:#e74c3c; --acc:#4da3ff; --tok:#f39c12; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui,Segoe UI,Roboto,sans-serif; }
+  header { padding:14px 20px; border-bottom:1px solid var(--bd); }
+  h1 { margin:0; font-size:18px; } .sub { color:var(--mut); font-size:12px; }
+  .wrap { padding:16px 20px; max-width:1500px; margin:0 auto; }
+  .panel { background:var(--card); border:1px solid var(--bd); border-radius:12px; padding:14px; margin-bottom:14px; }
+  .step { font-weight:700; font-size:13px; color:var(--acc); margin:16px 0 6px; padding-top:12px; border-top:1px solid var(--bd); }
+  .step:first-child { margin-top:0; padding-top:0; border-top:none; }
+  label { color:var(--mut); font-size:12px; display:block; margin:8px 0 3px; }
+  select,button,textarea,input { background:#0f1115; color:var(--fg); border:1px solid var(--bd);
+    border-radius:8px; padding:8px 10px; font:inherit; width:100%; }
+  textarea { resize:vertical; min-height:70px; }
+  .opts5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
+  .optrow { display:flex; gap:6px; align-items:center; } .optrow span { color:var(--acc); font-weight:700; width:16px; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  button { cursor:pointer; width:auto; } button:hover { border-color:var(--acc); }
+  button.run { background:var(--acc); color:#031525; border:none; font-weight:700; padding:9px 20px; }
+  .vers { display:flex; gap:10px; flex-wrap:wrap; }
+  .chk { display:flex; gap:7px; align-items:center; cursor:pointer; user-select:none;
+         border:1px solid var(--bd); border-radius:20px; padding:5px 14px; font-size:13px; }
+  .chk input { width:auto; } .chk small { color:var(--mut); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .chd { padding:10px 12px; border-bottom:1px solid var(--bd); }
+  .cname { font-weight:700; } .cdesc { color:var(--mut); font-size:11px; }
+  .body { padding:10px 12px; min-height:120px; max-height:440px; overflow-y:auto; font-size:12.5px; }
+  .agent { margin:6px 0; } .alab { color:var(--acc); font-weight:600; font-size:11px; text-transform:uppercase; }
+  .stream { white-space:pre-wrap; word-break:break-word; color:#cfd6de; margin-top:2px; }
+  .phase { color:var(--mut); font-style:italic; font-size:11.5px; margin:4px 0; }
+  .foot { padding:8px 12px; border-top:1px solid var(--bd); display:flex; gap:12px; align-items:center; flex-wrap:wrap; font-size:12px; }
+  .badge { font-weight:700; border-radius:6px; padding:2px 8px; }
+  .b-ok { background:rgba(46,204,113,.15); color:var(--ok); } .b-bad { background:rgba(231,76,60,.15); color:var(--bad); }
+  .b-run { background:rgba(77,163,255,.15); color:var(--acc); }
+  .met { color:var(--mut); } .met b { color:var(--fg); } .tok { color:var(--tok); }
+  .cursor::after { content:"▍"; color:var(--acc); animation:bl 1s steps(1) infinite; } @keyframes bl { 50%{opacity:0;} }
+</style>
+</head>
+<body>
+<header><h1>MedQA-USMLE · Live Demo</h1></header>
+<div class="wrap">
+  <div class="panel">
+    <div class="step">Bước 1 · Nhập câu hỏi</div>
+    <label>Nạp nhanh câu mẫu từ tập test (kèm đáp án đúng để chấm) — hoặc tự nhập bên dưới</label>
+    <select id="qsel"></select>
+    <label>Câu hỏi</label>
+    <textarea id="qtext" placeholder="Nhập câu hỏi lâm sàng..."></textarea>
+    <label>Lựa chọn</label>
+    <div class="opts5" id="opts"></div>
+    <label>Đáp án đúng (để chấm, có thể để trống)</label>
+    <select id="gold" style="width:130px"><option value="">— không —</option>
+      <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+    <div class="step">Bước 2 · Chọn version</div>
+    <div class="vers" id="vers"></div>
+    <div class="step">Bước 3 · Chạy</div>
+    <div class="row"><button id="run" class="run">▶ Chạy</button><span class="sub" id="status"></span></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+let VARIANTS=[], LETTERS=['A','B','C','D','E'];
+const $=id=>document.getElementById(id);
+async function boot(){
+  const m=await (await fetch('/api/meta')).json();
+  VARIANTS=m.variants;
+  $('qsel').innerHTML='<option value="">— chọn câu mẫu —</option>'+
+    m.questions.map(q=>`<option value="${q.idx}">#${q.idx} · ${q.q}</option>`).join('');
+  $('opts').innerHTML=LETTERS.map(k=>`<div class="optrow"><span>${k}</span><input id="opt-${k}" placeholder="lựa chọn ${k}"></div>`).join('');
+  $('vers').innerHTML=VARIANTS.map(v=>`<label class="chk"><input type="checkbox" value="${v.id}" checked>
+    ${v.name} <small>${v.desc}</small></label>`).join('');
+  $('qsel').onchange=async()=>{ const i=$('qsel').value; if(i==='')return;
+    const q=await (await fetch('/api/question/'+i)).json();
+    $('qtext').value=q.question; LETTERS.forEach(k=>$('opt-'+k).value=q.options[k]||''); $('gold').value=q.gold||''; };
+  $('run').onclick=runSelected;
+}
+function buildCards(sel){
+  $('grid').innerHTML=sel.map(v=>`
+    <div class="card" id="card-${v.id}">
+      <div class="chd"><div class="cname">${v.name}</div><div class="cdesc">${v.desc}</div></div>
+      <div class="body" id="body-${v.id}"><span class="phase">— chờ —</span></div>
+      <div class="foot" id="foot-${v.id}"></div></div>`).join('');
+}
+function collect(){
+  const options={}; LETTERS.forEach(k=>{ const v=$('opt-'+k).value.trim(); if(v) options[k]=v; });
+  return { question:$('qtext').value.trim(), options, gold:$('gold').value };
+}
+function runVariant(v, q){ return new Promise(res=>{
+  const body=$('body-'+v.id), foot=$('foot-'+v.id);
+  body.innerHTML=''; foot.innerHTML='<span class="badge b-run">đang chạy…</span>'; let cur=null;
+  const p=new URLSearchParams({variant:v.id, question:q.question, options:JSON.stringify(q.options)});
+  if(q.gold) p.set('gold', q.gold);
+  const src=new EventSource('/stream?'+p.toString());
+  src.onmessage=e=>{ const d=JSON.parse(e.data);
+    if(d.type==='phase'){ const el=document.createElement('div'); el.className='phase'; el.textContent='▸ '+(d.detail||d.name); body.appendChild(el); }
+    else if(d.type==='agent'){ const w=document.createElement('div'); w.className='agent';
+      w.innerHTML=`<div class="alab">${d.name}</div><div class="stream cursor"></div>`; body.appendChild(w); cur=w.querySelector('.stream'); }
+    else if(d.type==='token'&&cur){ cur.textContent+=d.text; body.scrollTop=body.scrollHeight; }
+    else if(d.type==='agent_done'){ if(cur)cur.classList.remove('cursor');
+      const s=document.createElement('span'); s.className='met'; s.style.fontSize='11px'; s.innerHTML=` <span class="tok">${d.tokens} tok</span> · ${d.latency}s`;
+      if(cur&&cur.previousElementSibling)cur.previousElementSibling.appendChild(s); }
+    else if(d.type==='answer'){ const b=d.correct===null?'b-run':(d.correct?'b-ok':'b-bad'); const t=d.correct===null?'':(d.correct?'✓ ĐÚNG':'✗ SAI');
+      foot.innerHTML=`<span class="badge ${b}">Đáp án: ${d.pred||'—'} ${t}</span>`+(d.gold?`<span class="met">gold ${d.gold}</span>`:''); }
+    else if(d.type==='metrics'){ foot.innerHTML+=`<span class="met"><b>${d.latency}s</b></span> <span class="met tok"><b>${d.tokens_total}</b> tok</span><span class="met">${d.n_calls} call LLM</span>`; }
+    else if(d.type==='error'){ foot.innerHTML=`<span class="badge b-bad">Lỗi: ${d.msg}</span>`; }
+    else if(d.type==='end'){ src.close(); res(); } };
+  src.onerror=()=>{ src.close(); foot.innerHTML+=' <span class="badge b-bad">mất kết nối</span>'; res(); };
+});}
+async function runSelected(){
+  const q=collect();
+  if(!q.question || Object.keys(q.options).length<2){ alert('Nhập câu hỏi + ít nhất 2 lựa chọn.'); return; }
+  const ids=[...document.querySelectorAll('#vers input:checked')].map(c=>c.value);
+  if(!ids.length){ alert('Chọn ít nhất 1 version.'); return; }
+  const sel=VARIANTS.filter(v=>ids.includes(v.id)); buildCards(sel);
+  $('run').disabled=true;
+  for(const v of sel){ $('status').textContent='Đang chạy: '+v.name; await runVariant(v,q); }
+  $('status').textContent='Xong.'; $('run').disabled=false;
+}
+boot();
+</script>
+</body>
+</html>

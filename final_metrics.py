@@ -7,8 +7,8 @@ N = 1273
 VARIANTS = [
     ("Direct LLM (không RAG)", "index/eval_direct_results.DIRECT.json"),
     ("RAG-only (single-LLM+RAG)", "index/eval_rag_results.json"),
-    ("V3 multi-agent OFF (mem tắt)", "index/eval_agents_results.OFF.json"),
-    ("V3 multi-agent ON (mem bật)", "index/eval_agents_results.ON.json"),
+    ("V2 (3 agent, ZERO memory)", "index/eval_v2_results.V2.json"),
+    ("V3 (3 agent, +cả 2 memory)", "index/eval_agents_results.ON.json"),
 ]
 data = {name: M.load_results(path) for name, path in VARIANTS}
 
@@ -33,10 +33,9 @@ print("XẾP HẠNG:", " > ".join(f"{n.split('(')[0].strip()} {a*100:.1f}%" for 
 
 # so sánh từng cặp có ý nghĩa (theo trình tự nâng cấp pipeline)
 PAIRS = [
-    ("RAG-only", "Direct LLM (không RAG)", "RAG-only (single-LLM+RAG)", "RAG có giúp so với Direct?"),
-    ("V3-OFF vs RAG-only", "RAG-only (single-LLM+RAG)", "V3 multi-agent OFF (mem tắt)", "Multi-agent có giúp so với RAG-only?"),
-    ("V3-ON vs V3-OFF", "V3 multi-agent OFF (mem tắt)", "V3 multi-agent ON (mem bật)", "Memory có giúp trong V3?"),
-    ("Direct vs V3-ON", "V3 multi-agent ON (mem bật)", "Direct LLM (không RAG)", "Direct so với hệ đầy đủ nhất?"),
+    ("+RAG", "Direct LLM (không RAG)", "RAG-only (single-LLM+RAG)", "RAG có giúp so với Direct?"),
+    ("+multi-agent", "RAG-only (single-LLM+RAG)", "V2 (3 agent, ZERO memory)", "Multi-agent có giúp so với RAG-only?"),
+    ("+memory", "V2 (3 agent, ZERO memory)", "V3 (3 agent, +cả 2 memory)", "Memory (cả 2 loại) có giúp so với zero-memory?"),
 ]
 print("\n" + "=" * 78)
 print("SO SÁNH GHÉP CẶP (paired McNemar exact + bootstrap CI của hiệu)")

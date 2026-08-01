@@ -34,22 +34,22 @@
       "latency_p95_s": 71.8,
       "tokens_total": 4105143
     },
-    "v3-mem-off": {
-      "accuracy": 0.7329,
-      "correct": 933,
+    "v2": {
+      "accuracy": 0.7675,
+      "correct": 977,
       "total": 1273,
       "acc_ci95": [
-        0.7093,
-        0.7565
+        0.7439,
+        0.7903
       ],
       "invalid": 0,
       "invalid_rate": 0.0,
-      "latency_mean_s": 168.2,
-      "latency_median_s": 163.7,
-      "latency_p95_s": 215.7,
-      "tokens_total": 12391675
+      "latency_mean_s": 97.7,
+      "latency_median_s": 81.1,
+      "latency_p95_s": 248.3,
+      "tokens_total": 9625679
     },
-    "v3-mem-on": {
+    "v3": {
       "accuracy": 0.7683,
       "correct": 978,
       "total": 1273,
@@ -84,51 +84,35 @@
     },
     {
       "base": "rag-only",
-      "new": "v3-mem-off",
-      "accuracy_gain": -0.0621,
-      "win": 53,
-      "loss": 132,
-      "tie": 1088,
-      "mcnemar_b": 132,
-      "mcnemar_c": 53,
-      "mcnemar_p": 0.0,
+      "new": "v2",
+      "accuracy_gain": -0.0275,
+      "win": 71,
+      "loss": 106,
+      "tie": 1096,
+      "mcnemar_b": 106,
+      "mcnemar_c": 71,
+      "mcnemar_p": 0.0104,
       "diff_ci95": [
-        -0.0833,
-        -0.0416
+        -0.0479,
+        -0.0079
       ],
       "significant": true
     },
     {
-      "base": "v3-mem-off",
-      "new": "v3-mem-on",
-      "accuracy_gain": 0.0353,
-      "win": 94,
-      "loss": 49,
-      "tie": 1130,
-      "mcnemar_b": 49,
-      "mcnemar_c": 94,
-      "mcnemar_p": 0.00021,
+      "base": "v2",
+      "new": "v3",
+      "accuracy_gain": 0.0008,
+      "win": 78,
+      "loss": 77,
+      "tie": 1118,
+      "mcnemar_b": 77,
+      "mcnemar_c": 78,
+      "mcnemar_p": 1.0,
       "diff_ci95": [
-        0.0173,
-        0.0534
+        -0.0189,
+        0.0204
       ],
-      "significant": true
-    },
-    {
-      "base": "v3-mem-on",
-      "new": "direct-llm",
-      "accuracy_gain": 0.0487,
-      "win": 142,
-      "loss": 80,
-      "tie": 1051,
-      "mcnemar_b": 80,
-      "mcnemar_c": 142,
-      "mcnemar_p": 4e-05,
-      "diff_ci95": [
-        0.0259,
-        0.0715
-      ],
-      "significant": true
+      "significant": false
     }
   ]
 }
