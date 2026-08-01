@@ -31,6 +31,74 @@ def index():
     return send_from_directory(HERE, "index.html")
 
 
+def _mlflow_client():
+    import mlflow
+    from mlflow import MlflowClient
+    mlflow.set_tracking_uri(CFG["mlflow"]["tracking_uri"])
+    return mlflow, MlflowClient()
+
+
+@app.route("/api/experiments")
+def experiments():
+    # filter PHIÊN BẢN: liệt kê experiment trên MLflow (v1 = medqa-v3; v2 tương lai ở experiment khác). Server-side.
+    try:
+        _, c = _mlflow_client()
+        exps = [{"id": e.experiment_id, "name": e.name}
+                for e in c.search_experiments() if e.name != "Default"]
+        return {"experiments": exps}
+    except Exception as e:
+        return {"experiments": [], "error": str(e)[:120]}
+
+
+def _span_io(sp):
+    """Rút request (messages) + response từ 1 span, cắt gọn."""
+    req = ""
+    inp = sp.inputs or {}
+    if isinstance(inp, dict) and inp.get("messages"):
+        req = "\n".join(m.get("content", "") for m in inp["messages"] if isinstance(m, dict))
+    else:
+        req = str(inp)
+    out = sp.outputs or {}
+    resp = out.get("response") if isinstance(out, dict) and out.get("response") else str(out)
+    return req[:6000], (resp or "")[:6000]
+
+
+@app.route("/api/traces")
+def traces():
+    # DETAIL theo variant: lấy mẫu trace (request/response/pred/correct) từ MLflow. Server-side (client chỉ gọi BE).
+    exp_id = request.args.get("experiment_id")
+    variant = request.args.get("variant", "")
+    limit = min(int(request.args.get("limit", 15)), 40)
+    try:
+        mlflow, c = _mlflow_client()
+        if not exp_id:
+            e = c.get_experiment_by_name(CFG["mlflow"]["experiment"]); exp_id = e.experiment_id if e else None
+        fs = f"tags.variant = '{variant}'" if variant else None
+        infos = mlflow.search_traces(experiment_ids=[exp_id], filter_string=fs,
+                                     max_results=limit, return_type="list")
+        out = []
+        for ti in infos:
+            tid = getattr(ti.info, "trace_id", None) or getattr(ti.info, "request_id", None)
+            tg = getattr(ti.info, "tags", {}) or {}
+            spans = []
+            try:
+                full = c.get_trace(tid)
+                for sp in full.data.spans:
+                    if sp.inputs and (("messages" in str(sp.inputs)) or ("query" in str(sp.inputs))):
+                        req, resp = _span_io(sp)
+                        spans.append({"agent": sp.name, "request": req, "response": resp})
+            except Exception:
+                pass
+            out.append({"q_index": tg.get("q_index"), "gold": tg.get("gold"),
+                        "pred": tg.get("pred"), "correct": tg.get("correct") == "True",
+                        "spans": spans})
+        # sắp theo q_index
+        out.sort(key=lambda x: int(x["q_index"]) if str(x.get("q_index") or "").isdigit() else 0)
+        return {"variant": variant, "n": len(out), "traces": out}
+    except Exception as e:
+        return {"traces": [], "error": str(e)[:160]}
+
+
 @app.route("/api/metrics")
 def metrics():
     # đọc kết quả benchmark tổng hợp (docs/metrics_summary.json — sinh bởi gen_summary.py)

@@ -61,6 +61,17 @@
   table.pw th { color:var(--mut); font-weight:600; }
   .gain-pos { color:var(--ok); font-weight:700; } .gain-neg { color:var(--bad); font-weight:700; }
   .sig { font-size:11px; border-radius:20px; padding:1px 8px; } .sig-y { background:rgba(46,204,113,.15); color:var(--ok); } .sig-n { background:rgba(154,164,178,.15); color:var(--mut); }
+  .filters { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+  .filters > div { display:flex; flex-direction:column; }
+  .filters select { width:auto; min-width:160px; }
+  .tr-item { border:1px solid var(--bd); border-radius:8px; margin:8px 0; overflow:hidden; }
+  .tr-head { padding:8px 12px; cursor:pointer; display:flex; gap:12px; align-items:center; background:#0f1115; }
+  .tr-head:hover { border-color:var(--acc); } .tr-q { font-weight:700; }
+  .tr-body { padding:0 12px; max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .tr-item.open .tr-body { max-height:1200px; overflow-y:auto; padding:10px 12px; }
+  .sp { margin:8px 0; } .sp-name { color:var(--acc); font-size:11px; font-weight:700; text-transform:uppercase; }
+  .io-lab { color:var(--mut); font-size:10.5px; margin:4px 0 2px; }
+  .io { background:#0f1115; border:1px solid var(--bd); border-radius:6px; padding:6px 8px; font:11.5px/1.45 ui-monospace,Menlo,monospace; white-space:pre-wrap; word-break:break-word; max-height:200px; overflow-y:auto; color:#cfd6de; }
 </style>
 </head>
 <body>
@@ -102,6 +113,20 @@
     <div class="chart-t">So sánh ghép cặp (paired McNemar exact + bootstrap 95% CI)</div>
     <div class="chart-s">Gain dương = version sau tốt hơn. Ý nghĩa: p&lt;0.05.</div>
     <div style="overflow-x:auto"><table class="pw" id="pwtable"></table></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="chart-t">Chi tiết request / response theo variant <span class="chart-s" style="display:inline">(từ MLflow — dữ liệu backend)</span></div>
+    <div class="filters" style="margin:12px 0">
+      <div><label>Phiên bản (experiment)</label><select id="fExp"></select></div>
+      <div><label>Variant</label><select id="fVar">
+        <option value="v2">V2 (no-mem)</option>
+        <option value="v3-mem-on">V3 (memory)</option>
+      </select></div>
+      <div><label>Số câu</label><select id="fLim"><option>10</option><option>20</option><option>40</option></select></div>
+      <button class="run" id="fLoad" style="margin-bottom:1px">Tải trace</button>
+      <span class="sub" id="trStatus"></span>
+    </div>
+    <div id="trList"></div>
   </div>
 </div>
 
@@ -198,7 +223,34 @@ async function loadMetrics(){
         <td><span class="sig ${p.significant?'sig-y':'sig-n'}">${p.significant?'CÓ (p<0.05)':'không'}</span></td></tr>`;
     }).join('')+'</tbody>';
   $('charts').dataset.loaded='1';
+  loadExperiments();
 }
+async function loadExperiments(){
+  try{ const d=await (await fetch('/api/experiments')).json();
+    $('fExp').innerHTML=(d.experiments||[]).map(e=>`<option value="${e.id}">${e.name}</option>`).join('') || '<option value="">(không có)</option>';
+  }catch(e){ $('fExp').innerHTML='<option value="">(MLflow lỗi)</option>'; }
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+async function loadTraces(){
+  const exp=$('fExp').value, v=$('fVar').value, lim=$('fLim').value;
+  $('trStatus').textContent='đang tải…'; $('trList').innerHTML='';
+  let d; try{ d=await (await fetch(`/api/traces?experiment_id=${exp}&variant=${v}&limit=${lim}`)).json(); }
+  catch(e){ $('trStatus').textContent='lỗi tải'; return; }
+  if(d.error){ $('trStatus').textContent='lỗi: '+d.error; return; }
+  $('trStatus').textContent=`${d.n} câu`;
+  $('trList').innerHTML=(d.traces||[]).map(t=>{
+    const badge=t.correct?'<span class="badge b-ok">✓ĐÚNG</span>':'<span class="badge b-bad">✗SAI</span>';
+    const spans=(t.spans||[]).map(s=>`<div class="sp"><div class="sp-name">${s.agent}</div>
+        <div class="io-lab">REQUEST</div><div class="io">${esc(s.request)}</div>
+        <div class="io-lab">RESPONSE</div><div class="io">${esc(s.response)}</div></div>`).join('') || '<div class="chart-s">Không có span</div>';
+    return `<div class="tr-item"><div class="tr-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="tr-q">Câu #${t.q_index}</span> ${badge}
+        <span class="met">pred <b>${t.pred}</b> · gold <b>${t.gold}</b></span>
+        <span class="met" style="margin-left:auto">${(t.spans||[]).length} span ▾</span></div>
+      <div class="tr-body">${spans}</div></div>`;
+  }).join('') || '<div class="chart-s">Không có trace cho variant này (Direct/RAG baseline không log MLflow).</div>';
+}
+$('fLoad').onclick=loadTraces;
 boot();
 </script>
 </body>
