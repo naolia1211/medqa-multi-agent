@@ -83,10 +83,33 @@ def _retrieve(question):
     return ev
 
 
+def log_demo_trace(variant, question, options, gold, pred, calls, latency):
+    """Track câu hỏi DEMO của user vào MLflow experiment 'demo' (chi tiết request/response mọi version).
+    KHÔNG đo hiệu năng — chỉ lưu detail. No-op nếu MLflow lỗi (không ảnh hưởng demo)."""
+    try:
+        import mlflow
+        mlflow.set_tracking_uri(_CFG["mlflow"]["tracking_uri"])
+        mlflow.set_experiment("demo")
+        with mlflow.start_span(name=f"demo_{variant}", span_type="CHAIN") as root:
+            root.set_inputs({"question": question, "options": options})
+            root.set_outputs({"pred": pred})
+            for c in calls:
+                with mlflow.start_span(name=c["agent"]) as sp:
+                    sp.set_inputs({"messages": [{"role": "user", "content": str(c["request"])[:8000]}]})
+                    sp.set_outputs({"response": str(c["response"])[:8000]})
+            mlflow.update_current_trace(tags={
+                "variant": variant, "source": "demo_user", "pred": str(pred),
+                "gold": str(gold) if gold else "", "question": question[:250],
+                "correct": str(pred == gold) if gold else "", "latency_s": str(latency),
+            })
+    except Exception:
+        pass
+
+
 # ── các generator theo variant ───────────────────────────────────────────────
 def run_variant(variant, question, options, gold=None):
     """Yield mọi event cho 1 variant. options: {A..E}. gold: đáp án đúng (có thể None)."""
-    t_all = time.time(); tok_total = 0; n_calls = 0
+    t_all = time.time(); tok_total = 0; n_calls = 0; calls = []
     letters = ", ".join(options.keys())
 
     def finish(pred):
@@ -94,6 +117,7 @@ def run_variant(variant, question, options, gold=None):
                "correct": (pred == gold) if gold else None}
         yield {"type": "metrics", "latency": round(time.time() - t_all, 1),
                "tokens_total": tok_total, "n_calls": n_calls}
+        log_demo_trace(variant, question, options, gold, pred, calls, round(time.time() - t_all, 1))
 
     # --- Direct: 0 retrieve, 1 call ---
     if variant == "direct":
@@ -103,6 +127,7 @@ def run_variant(variant, question, options, gold=None):
             if e["type"] == "_result": res = e
             else: yield e
         tok_total += res.get("tokens", 0); n_calls = 1
+        calls.append({"agent": "Direct LLM", "request": msgs[-1]["content"], "response": res.get("full", "")})
         yield from finish(parse_choice(res.get("full", ""), set(options.keys())))
         return
 
@@ -120,6 +145,7 @@ def run_variant(variant, question, options, gold=None):
             if e["type"] == "_result": res = e
             else: yield e
         tok_total += res.get("tokens", 0); n_calls = 1
+        calls.append({"agent": "RAG-only", "request": msgs[-1]["content"], "response": res.get("full", "")})
         yield from finish(parse_choice(res.get("full", ""), set(options.keys())))
         return
 
@@ -139,6 +165,7 @@ def run_variant(variant, question, options, gold=None):
         if e["type"] == "_result": r1 = e
         else: yield e
     tok_total += r1.get("tokens", 0); n_calls += 1
+    calls.append({"agent": "Agent 1 · Reasoning", "request": p1, "response": r1.get("full", "")})
     a1 = parse_json_loose(r1.get("full", ""), ["candidates"]) or {"candidates": [], "reasoning": r1.get("full", "")[:800]}
 
     # Agent 2 — Verifier
@@ -149,6 +176,7 @@ def run_variant(variant, question, options, gold=None):
         if e["type"] == "_result": r2 = e
         else: yield e
     tok_total += r2.get("tokens", 0); n_calls += 1
+    calls.append({"agent": "Agent 2 · Verifier", "request": p2, "response": r2.get("full", "")})
     a2 = parse_json_loose(r2.get("full", ""), ["concerns"]) or {"concerns": {}, "critique": r2.get("full", "")[:600]}
 
     # Agent 3 — Aggregator (V3: thấy evidence | V2: mù evidence)
@@ -167,4 +195,5 @@ def run_variant(variant, question, options, gold=None):
         if e["type"] == "_result": r3 = e
         else: yield e
     tok_total += r3.get("tokens", 0); n_calls += 1
+    calls.append({"agent": agg_name, "request": p3, "response": r3.get("full", "")})
     yield from finish(extract_answer(r3.get("full", ""), valid=options.keys()))

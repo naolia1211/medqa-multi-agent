@@ -118,10 +118,7 @@
     <div class="chart-t">Chi tiết request / response theo variant <span class="chart-s" style="display:inline">(từ MLflow — dữ liệu backend)</span></div>
     <div class="filters" style="margin:12px 0">
       <div><label>Phiên bản (experiment)</label><select id="fExp"></select></div>
-      <div><label>Variant</label><select id="fVar">
-        <option value="v2">V2 (no-mem)</option>
-        <option value="v3-mem-on">V3 (memory)</option>
-      </select></div>
+      <div><label>Variant</label><select id="fVar"></select></div>
       <div><label>Số câu</label><select id="fLim"><option>10</option><option>20</option><option>40</option></select></div>
       <button class="run" id="fLoad" style="margin-bottom:1px">Tải trace</button>
       <span class="sub" id="trStatus"></span>
@@ -225,10 +222,19 @@ async function loadMetrics(){
   $('charts').dataset.loaded='1';
   loadExperiments();
 }
+const VLABEL={ 'direct':'Direct LLM','rag':'RAG-only','v2':'V2 (no-mem)','v3on':'V3 (memory)',
+               'v3-mem-on':'V3 (memory)','v3-mem-off':'V3-OFF' };
 async function loadExperiments(){
   try{ const d=await (await fetch('/api/experiments')).json();
     $('fExp').innerHTML=(d.experiments||[]).map(e=>`<option value="${e.id}">${e.name}</option>`).join('') || '<option value="">(không có)</option>';
+    $('fExp').onchange=()=>loadVariants($('fExp').value);
+    if($('fExp').value) loadVariants($('fExp').value);
   }catch(e){ $('fExp').innerHTML='<option value="">(MLflow lỗi)</option>'; }
+}
+async function loadVariants(expId){
+  try{ const d=await (await fetch('/api/variants?experiment_id='+expId)).json();
+    $('fVar').innerHTML=(d.variants||[]).map(v=>`<option value="${v}">${VLABEL[v]||v}</option>`).join('') || '<option value="">(không có variant)</option>';
+  }catch(e){ $('fVar').innerHTML='<option value="">(lỗi)</option>'; }
 }
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 async function loadTraces(){

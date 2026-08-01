@@ -50,6 +50,28 @@ def experiments():
         return {"experiments": [], "error": str(e)[:120]}
 
 
+_VAR_CANDIDATES = ["direct", "rag", "v2", "v3on", "v3-mem-on", "v3-mem-off", "v3"]
+
+@app.route("/api/variants")
+def variants_in_exp():
+    # variant có trong 1 experiment. Probe từng ứng viên bằng filtered search (mỗi cái ~0.2s -> nhanh,
+    # bắt được cả variant ở trace CŨ mà sample-recent bỏ sót). Server-side.
+    exp_id = request.args.get("experiment_id")
+    try:
+        mlflow, c = _mlflow_client()
+        if not exp_id:
+            e = c.get_experiment_by_name(CFG["mlflow"]["experiment"]); exp_id = e.experiment_id if e else None
+        vs = []
+        for v in _VAR_CANDIDATES:
+            tr = mlflow.search_traces(experiment_ids=[exp_id], filter_string=f"tags.variant = '{v}'",
+                                      max_results=1, return_type="list")
+            if tr:
+                vs.append(v)
+        return {"variants": vs}
+    except Exception as e:
+        return {"variants": [], "error": str(e)[:120]}
+
+
 def _span_io(sp):
     """Rút request (messages) + response từ 1 span, cắt gọn."""
     req = ""
