@@ -171,8 +171,8 @@ def stream():
         yield "data: {\"type\":\"end\"}\n\n"
 
     return Response(gen(), mimetype="text/event-stream",
-                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no",
-                             "Connection": "keep-alive"})
+                    headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no",
+                             "Connection": "keep-alive", "Content-Encoding": "none"})
 
 
 if __name__ == "__main__":

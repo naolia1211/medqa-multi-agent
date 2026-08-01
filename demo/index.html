@@ -110,8 +110,8 @@
   </div>
   <div class="mgrid" id="charts"></div>
   <div class="panel" style="margin-top:14px">
-    <div class="chart-t">So sánh ghép cặp (paired McNemar exact + bootstrap 95% CI)</div>
-    <div class="chart-s">Gain dương = version sau tốt hơn. Ý nghĩa: p&lt;0.05.</div>
+    <div class="chart-t">Giá trị chi tiết theo variant</div>
+    <div class="chart-s">Số liệu benchmark trên test 1273 câu (mẫu số cố định).</div>
     <div style="overflow-x:auto"><table class="pw" id="pwtable"></table></div>
   </div>
   <div class="panel" style="margin-top:14px">
@@ -208,16 +208,16 @@ async function loadMetrics(){
    +barChart('Độ trễ (median/câu)', 'thấp hơn = nhanh', rows('latency_median_s'), v=>v.toFixed(0)+'s')
    +barChart('Token tổng (in+out)', 'thấp hơn = rẻ', rows('tokens_total'), v=>fmtTok(v))
    +barChart('Invalid rate', 'đáp án không hợp lệ (thấp hơn = tốt)', rows('invalid_rate').map(r=>({...r,value:r.value*100})), v=>v.toFixed(2)+'%');
-  // bảng pairwise
-  const nm=k=>VMETA[k]?VMETA[k].n:k;
-  $('pwtable').innerHTML='<thead><tr><th>So sánh</th><th>Gain</th><th>Win/Loss/Tie</th><th>McNemar p</th><th>95% CI hiệu</th><th>Ý nghĩa</th></tr></thead><tbody>'+
-    d.pairwise.map(p=>{ const g=(p.accuracy_gain*100); const gc=g>=0?'gain-pos':'gain-neg';
-      return `<tr><td>${nm(p.base)} → ${nm(p.new)}</td>
-        <td class="${gc}">${g>=0?'+':''}${g.toFixed(2)}đ</td>
-        <td>${p.win}/${p.loss}/${p.tie}</td>
-        <td>${p.mcnemar_p.toFixed(4)}</td>
-        <td>[${(p.diff_ci95[0]*100).toFixed(2)}, ${(p.diff_ci95[1]*100).toFixed(2)}]</td>
-        <td><span class="sig ${p.significant?'sig-y':'sig-n'}">${p.significant?'CÓ (p<0.05)':'không'}</span></td></tr>`;
+  // bảng giá trị theo variant
+  $('pwtable').innerHTML='<thead><tr><th>Variant</th><th>Accuracy</th><th>95% CI</th><th>Invalid</th><th>Latency (med / p95)</th><th>Token</th></tr></thead><tbody>'+
+    keys.map(k=>{ const v=pv[k];
+      return `<tr>
+        <td><span class="swatch" style="background:${VMETA[k].c};display:inline-block;margin-right:6px;vertical-align:middle"></span>${VMETA[k].n}</td>
+        <td><b>${(v.accuracy*100).toFixed(2)}%</b> <span class="met">(${v.correct}/${v.total})</span></td>
+        <td>${(v.acc_ci95[0]*100).toFixed(1)}–${(v.acc_ci95[1]*100).toFixed(1)}%</td>
+        <td>${(v.invalid_rate*100).toFixed(2)}%</td>
+        <td>${v.latency_median_s.toFixed(0)}s / ${v.latency_p95_s.toFixed(0)}s</td>
+        <td class="tok">${fmtTok(v.tokens_total)}</td></tr>`;
     }).join('')+'</tbody>';
   $('charts').dataset.loaded='1';
   loadExperiments();
