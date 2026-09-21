@@ -1,0 +1,4 @@
+requests>=2.31
+pyyaml>=6.0
+# optional: upgrades AlpacaEval from the bundled 252-item fallback to the real 805
+# datasets>=2.14

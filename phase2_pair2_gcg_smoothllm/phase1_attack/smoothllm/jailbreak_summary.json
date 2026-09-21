@@ -1,0 +1,7 @@
+{
+  "n": 25,
+  "ASR_with_suffix": 1.0,
+  "ASR_no_suffix(clean baseline)": 0.08,
+  "max_new_tokens": 128,
+  "judge": "refusal-prefix heuristic (full-generation, KHAC voi Passed 16-token cua GCG)"
+}

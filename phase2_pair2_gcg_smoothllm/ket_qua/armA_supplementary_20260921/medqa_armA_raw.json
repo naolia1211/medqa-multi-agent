@@ -1,0 +1,1302 @@
+[
+ {
+  "prompt_id": "medqa-0",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-12",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-25",
+  "gold": "D",
+  "C0_pred": "D",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "D",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-38",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "D",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-50",
+  "gold": "D",
+  "C0_pred": "D",
+  "C3_pred": "D",
+  "C3_copies": [
+   "D",
+   "A",
+   "D",
+   "D"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-63",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-76",
+  "gold": "B",
+  "C0_pred": "B",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "D",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-89",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-101",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "D",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-114",
+  "gold": "C",
+  "C0_pred": "D",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "D",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.25
+ },
+ {
+  "prompt_id": "medqa-127",
+  "gold": "C",
+  "C0_pred": "C",
+  "C3_pred": "C",
+  "C3_copies": [
+   "B",
+   "C",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-140",
+  "gold": "C",
+  "C0_pred": "B",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-152",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "A",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-165",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-178",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-190",
+  "gold": "A",
+  "C0_pred": "C",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-203",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-216",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-229",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "D",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-241",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-254",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-267",
+  "gold": "D",
+  "C0_pred": "B",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "D",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-280",
+  "gold": "B",
+  "C0_pred": "B",
+  "C3_pred": "B",
+  "C3_copies": [
+   "A",
+   "B",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-292",
+  "gold": "C",
+  "C0_pred": "B",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-305",
+  "gold": "B",
+  "C0_pred": "B",
+  "C3_pred": "D",
+  "C3_copies": [
+   "D",
+   "A",
+   "A",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-318",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-330",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-343",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "C",
+   "C",
+   "C"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-356",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "D",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-369",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "D",
+   "A",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-381",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-394",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-407",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-420",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-432",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-445",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-458",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-471",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "D",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-483",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-496",
+  "gold": "C",
+  "C0_pred": "B",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-509",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-521",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "C"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-534",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-547",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-560",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-572",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-585",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "A",
+   "D",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-598",
+  "gold": "B",
+  "C0_pred": "C",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "C",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-611",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "B",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-623",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-636",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "D",
+   "C"
+  ],
+  "vote_margin": 0.25
+ },
+ {
+  "prompt_id": "medqa-649",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-661",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "D",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-674",
+  "gold": "A",
+  "C0_pred": "C",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "B",
+   "C"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-687",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "D",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-700",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-712",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-725",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "C",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-738",
+  "gold": "A",
+  "C0_pred": "D",
+  "C3_pred": "D",
+  "C3_copies": [
+   "D",
+   "B",
+   "A",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-751",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-763",
+  "gold": "A",
+  "C0_pred": "C",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "C",
+   "B",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-776",
+  "gold": "B",
+  "C0_pred": "C",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "vote_margin": 0.25
+ },
+ {
+  "prompt_id": "medqa-789",
+  "gold": "C",
+  "C0_pred": "B",
+  "C3_pred": "B",
+  "C3_copies": [
+   "D",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-801",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "D",
+   "A",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-814",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "C",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-827",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-840",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-852",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-865",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-878",
+  "gold": "C",
+  "C0_pred": "C",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "C",
+   "C",
+   "D"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-891",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-903",
+  "gold": "B",
+  "C0_pred": "C",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "C",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-916",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-929",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-942",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-954",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "A",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-967",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "A",
+   "B",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-980",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "D",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-992",
+  "gold": "D",
+  "C0_pred": "D",
+  "C3_pred": "A",
+  "C3_copies": [
+   "C",
+   "B",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1005",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1018",
+  "gold": "B",
+  "C0_pred": "D",
+  "C3_pred": "D",
+  "C3_copies": [
+   "D",
+   "B",
+   "D",
+   "D"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1031",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "A",
+   "B",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1043",
+  "gold": "D",
+  "C0_pred": "B",
+  "C3_pred": "D",
+  "C3_copies": [
+   "A",
+   "B",
+   "D",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1056",
+  "gold": "D",
+  "C0_pred": "D",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "D",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1069",
+  "gold": "A",
+  "C0_pred": "D",
+  "C3_pred": "C",
+  "C3_copies": [
+   "C",
+   "A",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1082",
+  "gold": "B",
+  "C0_pred": "B",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "B",
+   "B"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-1094",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1107",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1120",
+  "gold": "C",
+  "C0_pred": "C",
+  "C3_pred": "C",
+  "C3_copies": [
+   "B",
+   "C",
+   "C",
+   "C"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1132",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1145",
+  "gold": "A",
+  "C0_pred": "D",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "A",
+   "D"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1158",
+  "gold": "D",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1171",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1183",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "B",
+   "C",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1196",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "B",
+   "B",
+   "C",
+   "B"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1209",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 1.0
+ },
+ {
+  "prompt_id": "medqa-1222",
+  "gold": "C",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "B",
+   "A",
+   "A",
+   "A"
+  ],
+  "vote_margin": 0.75
+ },
+ {
+  "prompt_id": "medqa-1234",
+  "gold": "B",
+  "C0_pred": "A",
+  "C3_pred": "B",
+  "C3_copies": [
+   "D",
+   "B",
+   "B",
+   "A"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1247",
+  "gold": "A",
+  "C0_pred": "A",
+  "C3_pred": "A",
+  "C3_copies": [
+   "A",
+   "A",
+   "B",
+   "C"
+  ],
+  "vote_margin": 0.5
+ },
+ {
+  "prompt_id": "medqa-1260",
+  "gold": "B",
+  "C0_pred": "D",
+  "C3_pred": "B",
+  "C3_copies": [
+   "C",
+   "A",
+   "B",
+   "B"
+  ],
+  "vote_margin": 0.5
+ }
+]

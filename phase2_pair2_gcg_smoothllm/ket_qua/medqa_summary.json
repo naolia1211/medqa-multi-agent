@@ -1,0 +1,33 @@
+{
+  "arm": "B -- gemma4:12b-it-qat, the midterm system's own base model",
+  "measured": "2026-09-18, directly against the user's Ollama",
+  "question": "What does SmoothLLM cost on the task the system actually performs?",
+  "dataset": "GBaker/MedQA-USMLE-4-options, official test split (1273 rows), 100 questions spread-sampled at offsets 0/300/600/900",
+  "config": {"N": 4, "q": 10.0, "perturbation": "random character swap",
+             "think": false, "num_predict": 32, "temperature": 0.0, "seed": 42,
+             "constrained_decoding": "JSON schema {answer: enum[A..D]}",
+             "aggregator": "majority vote over the extracted letter"},
+
+  "C0_undefended": {"n": 100, "accuracy": 69.0, "invalid": 0},
+  "C3_smoothllm":  {"n": 100, "accuracy": 63.0, "invalid": 0},
+  "accuracy_drop_pp": -6.0,
+  "paired_test": {"c0_only_correct": 11, "c3_only_correct": 5, "tie": 84,
+                  "mcnemar_exact_p": 0.2101,
+                  "reading": "SmoothLLM broke 11 questions the model had right and fixed 5 it had wrong. Net -6 pp, but p = 0.21 -- at n=100 this is NOT statistically significant. Report it as a point estimate with the test, not as a demonstrated drop."},
+
+  "cost": {"llm_calls_per_question": {"C0": 1, "C3": 4, "multiplier": 4.0},
+           "wall_seconds_per_question": {"C0": 4.4, "C3": 19.5, "multiplier": 4.43},
+           "completion_tokens_per_question": {"C0": 10.8, "C3": 43.4, "multiplier": 4.02}},
+
+  "data_quality": {"invalid_c0": 0, "invalid_c3": 0, "invalid_copies": 0,
+                   "note": "Zero unparseable answers on either arm, and zero across all 400 individual copies."},
+
+  "measurement_bug_found_and_fixed": {
+    "symptom": "A first attempt with free-form decoding and num_predict=16 produced a 39% INVALID rate on C0 and 0% on C3, yielding C0 35.7% vs C3 60.7% -- i.e. SmoothLLM appearing to IMPROVE accuracy by 25 points.",
+    "cause": "gemma4 sometimes answers with a bare letter (2 tokens) and sometimes begins an explanation ('To solve this clinical vignette, let us break down the findings:') and hits the generation cap before reaching any letter. Those rows scored as wrong. The defended arm votes over 4 copies, so it recovered from the same truncation and showed no INVALIDs.",
+    "why_it_matters": "The artefact ran in the defense's favour and would have been reported as a headline benefit. An asymmetric measurement failure between arms is more dangerous than a noisy one, because it produces a plausible result rather than an obviously broken one.",
+    "fix": "Constrained decoding via an Ollama JSON schema. The model can no longer emit anything but {\"answer\": \"<letter>\"}, so truncation cannot produce an unparseable answer on either arm."
+  },
+
+  "caveat": "Direct-answer prompting with constrained decoding, NOT the midterm's chain-of-thought V0 configuration. Absolute accuracy is therefore not comparable with the midterm's 81.70%. The C0-vs-C3 paired difference IS comparable, because both arms use the identical setting, and that difference is what measures the defense's cost."
+}
