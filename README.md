@@ -1,5 +1,11 @@
 # Offline Indexing Pipeline — MedQA-USMLE (Dense + Sparse Hybrid)
 
+> ## 🎓 Final Project (Phase 2) — Attack & Defense
+> Repo này là **hệ thống Phase 1** (Medical Multi-Agent QA). Đồ án cuối kỳ (Pair 2 — tấn công **GCG**, phòng thủ **SmoothLLM**) nằm ở **[`phase2_pair2_gcg_smoothllm/`](phase2_pair2_gcg_smoothllm/)** — code tấn công/phòng thủ + harness đánh giá + dữ liệu + kết quả đo. (Báo cáo, slide, kịch bản demo nộp riêng, không nằm trong repo.)
+>
+> **Kết quả cốt lõi (đo thật):** trên Vicuna-7B, SmoothLLM cắt ASR của GCG **97% → 22%**; nhưng với jailbreak ngữ nghĩa chỉ cắt **97% → 77–87%** (residual cao). Trên model nền gemma, suffix **không chuyển giao** (ASR 0%). Chi phí 10× truy vấn trả trên cả hai. → xem [`phase2_pair2_gcg_smoothllm/README.md`](phase2_pair2_gcg_smoothllm/README.md).
+
+
 Nạp 18 textbook → chunk (tokenizer thật MedCPT) → 2 index **cùng tập chunk, cùng `chunk_id`**:
 - **Dense**: Qdrant (vector 768-dim MedCPT-Article, distance Dot, HNSW tắt = exact)
 - **Sparse**: Elasticsearch (BM25, analyzer y khoa `medical_en`)

@@ -1,0 +1,49 @@
+# Phase 2 -- SmoothLLM defense evaluation
+# Every number the harness reports traces back to a value in this file.
+
+run:
+  run_id: null              # null -> auto
+  max_new_tokens: 256       # enough for a refusal; raise to 1024 if think=true
+  workers: 4                # concurrent PROMPTS
+  seed: 42
+  log_dir: results
+  progress_every: 25
+
+defense:
+  N: 10                     # copies per LLM call (SmoothLLM paper default)
+  q: 10.0                   # percent of characters perturbed
+  perturbation: swap        # swap | patch | insert
+  seed: 42
+  copy_workers: 4           # concurrency WITHIN one defended call
+  placement: per_llm_call   # decided in planning: wraps every agent's LLM call
+
+# Both backends are run. The gap between them IS the transfer-gap result:
+# the GCG suffix was optimised on Vicuna fp16, the MedQA system runs on Gemma.
+backends:
+  vicuna:
+    kind: fastchat
+    base_url: http://localhost:8080/v1
+    model: vicuna-7b-v1.3
+    prompt_mode: templated  # byte-matches Phase-1 verification
+    name: vicuna-7b-v1.3
+    timeout: 300
+  gemma:
+    kind: ollama
+    base_url: http://localhost:11434
+    model: gemma4:12b-it-qat     # verified installed tag
+    num_ctx: 8192
+    # gemma4 is a REASONING model. Measured on this machine: think=true costs
+    # ~102 s/call on a harmful prompt (and returns EMPTY content unless
+    # num_predict >= ~1024), think=false costs ~12 s and answers directly.
+    # The midterm system assumed no separate think channel, so false is also the
+    # faithful setting. Set true + max_new_tokens 1024 to study reasoning mode.
+    think: false
+    name: gemma-4-12b
+    timeout: 600
+
+datasets:
+  safety: data/eval_sets/safety_prompts.jsonl
+  benign: data/eval_sets/benign_prompts.jsonl
+  medqa:  data/eval_sets/medqa_test.jsonl
+
+conditions: [C0, C1, C2, C3]

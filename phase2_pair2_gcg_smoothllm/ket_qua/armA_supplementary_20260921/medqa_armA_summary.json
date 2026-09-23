@@ -1,0 +1,29 @@
+{
+  "task": "medqa_armA_constrained",
+  "model": "vicuna-7b-v1.3 fp16",
+  "decoding": "constrained single-letter",
+  "n": 100,
+  "N": 4,
+  "q": 10.0,
+  "C0_acc": 33.0,
+  "C3_acc": 30.0,
+  "drop_pp": -3.0,
+  "C0_invalid": 0,
+  "C3_invalid": 0,
+  "C0_predA": 71,
+  "C3_predA": 62,
+  "C0_dist": {
+    "A": 71,
+    "D": 10,
+    "B": 10,
+    "C": 9
+  },
+  "C3_dist": {
+    "B": 24,
+    "A": 62,
+    "D": 5,
+    "C": 9
+  },
+  "mcnemar_b_c0only": 12,
+  "mcnemar_c_c3only": 9
+}
