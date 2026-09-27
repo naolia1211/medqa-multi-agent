@@ -17,6 +17,7 @@ chưa đo được nêu rõ là chưa đo, không ước lượng.
 | `data/eval_sets/` | Ba tập đánh giá đã dựng sẵn |
 | `data/phase1_gcg/` | Sản phẩm phase 1 kế thừa lại (code đọc trực tiếp) |
 | `phase1_attack/` | Gói bàn giao phase-1 (log GCG + suffix + input SmoothLLM); = nội dung `Pair2_ATTACK_results.zip` |
+| `phase1_attack/code_gcg/` | Source code phase-1 đã chạy trên GPU để sinh suffix universal (GCG 500 bước + post-run + notebook) |
 | `ket_qua/` | Bản ghi thô, bảng chỉ số, và `ghi_chu_phan_tich.md` (ghi chú phân tích gốc) |
 | `demo/replay_console.html` | Demo offline, phát lại 4 ca đã đo (mở bằng trình duyệt) |
 | `_giua_ky/` | Tài liệu giữa kỳ — KHÔNG thuộc Pair 2, để cách ly |
@@ -29,7 +30,8 @@ cần GPU và không cần model thật.
 ## Hai file phase 1 được sử dụng
 
 Phase 2 **không chạy lại GCG** (tốn ~21 giờ GPU), mà kế thừa đúng hai file
-trong `data/phase1_gcg/`:
+trong `data/phase1_gcg/`. Source code đã sinh ra chúng nằm ở
+`phase1_attack/code_gcg/` (kèm bảng tham số lần chạy thật):
 
 - **`universal_suffix.json`** — chuỗi tấn công 20 token đã tối ưu xong.
   `src/datasets_build.py` đọc file này để ghép suffix vào 100 goal độc hại,
@@ -114,7 +116,7 @@ Nếu đọc lại log cũ trên Kaggle, cột `n` ở bảng rescore bị nhân
 
 | Deliverable (đề bài §4) | File trong repo |
 |---|---|
-| **Code + README (35%)** — attack/defense/harness | `code/` (`src/smoothllm.py`, `src/judges.py`, `arm_a_run.py`, `run_medqa_gemma.py`, `step1_check_transfer.py`), `code/requirements.txt`, `code/tests/` |
+| **Code + README (35%)** — attack/defense/harness | Attack: `phase1_attack/code_gcg/` (GCG universal trên Vicuna-7B-v1.3). Defense + harness: `code/` (`src/smoothllm.py`, `src/judges.py`, `arm_a_run.py`, `run_medqa_gemma.py`, `step1_check_transfer.py`), `code/requirements.txt`, `code/tests/` |
 | **Báo cáo** | *nộp riêng — không nằm trong repo* |
 | **Live demo** | `demo/replay_console.html` (offline, phát lại 4 ca) |
 | **Slide + thuyết trình** | *nộp riêng — không nằm trong repo* |
