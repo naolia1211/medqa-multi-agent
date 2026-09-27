@@ -12,6 +12,7 @@ mô tả cách sắp xếp thư mục sau khi dọn.
 | `data/phase1_gcg/` | Sản phẩm phase-1 mà code đọc (suffix, refusal prefixes…) | Không di chuyển — code phụ thuộc. |
 | `ket_qua/` | Raw records + bảng chỉ số + `ghi_chu_phan_tich.md` | 700+400+200 dòng raw, đã đối chiếu khớp headline. |
 | `phase1_attack/` | Gói bàn giao phase-1 (GCG log + suffix + input SmoothLLM) | = nội dung `Pair2_ATTACK_results.zip`, trùng byte với `data/phase1_gcg`. |
+| `phase1_attack/code_gcg/` | Source code phase-1 đã chạy trên GPU thuê để sinh suffix (setup env, GCG 500 bước, post-run, notebook) | Path trong script là path remote `/workspace/...`; phase 2 KHÔNG chạy lại. |
 | `_giua_ky/` | 2 PDF giữa kỳ | KHÔNG thuộc Pair 2 — cách ly để khỏi nhầm. |
 
 Zip gốc lưu ở `../_archive_zip/` (`Pair2_ATTACK_results.zip`, `Pair2_GCG_SmoothLLM.zip`).
