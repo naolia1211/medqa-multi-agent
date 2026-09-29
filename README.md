@@ -1,5 +1,23 @@
 # Offline Indexing Pipeline — MedQA-USMLE (Dense + Sparse Hybrid)
+## AI Security Research Contribution
+My contribution to this project focuses on the security evaluation and
+adversarial robustness of the MedQA multi-agent LLM system.
 
+### Research Scope
+- Reproduced optimization-based GCG jailbreak attacks against aligned LLMs.
+- Implemented and evaluated SmoothLLM as a perturbation-based jailbreak defense.
+- Evaluated semantic jailbreak attacks and residual defense weaknesses.
+- Built an attack-defense evaluation workflow covering jailbreak attack success
+  rate (ASR), benign utility, query/latency overhead, and transferability.
+- Analyzed the effectiveness and limitations of SmoothLLM across different
+  adversarial attack strategies.
+
+**Attack:** GCG (Greedy Coordinate Gradient)  
+**Defense:** SmoothLLM  
+**System:** MedQA Multi-Agent LLM  
+**Evaluation:** ASR, benign utility, overhead, transferability, and residual failure modes
+➡️ **Implementation and experiments:** [`phase2_pair2_gcg_smoothllm/`](./phase2_pair2_gcg_smoothllm/)
+---
 > ## 🎓 Final Project (Phase 2) — Attack & Defense
 > Repo này là **hệ thống Phase 1** (Medical Multi-Agent QA). Đồ án cuối kỳ (Pair 2 — tấn công **GCG**, phòng thủ **SmoothLLM**) nằm ở **[`phase2_pair2_gcg_smoothllm/`](phase2_pair2_gcg_smoothllm/)** — code tấn công/phòng thủ + harness đánh giá + dữ liệu + kết quả đo. (Báo cáo, slide, kịch bản demo nộp riêng, không nằm trong repo.)
 >
